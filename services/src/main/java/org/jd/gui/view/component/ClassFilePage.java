@@ -119,7 +119,7 @@ public class ClassFilePage extends TypePage {
             public void actionPerformed(ActionEvent e) {
                 if (project != null) {
                     JavaIdentifier id = currentIdentifier.get();
-                    String result = JOptionPane.showInputDialog("Set New Alias For: \n" + id.getFriendlyDisplay());
+                    String result = JOptionPane.showInputDialog("Set New Alias For: \n" + id.getFriendlyDisplay(), id.getAlias());
                     if (result != null) {
                         project.setAlias(id, result);
                     }
@@ -136,7 +136,7 @@ public class ClassFilePage extends TypePage {
             public void actionPerformed(ActionEvent e) {
                 if (project != null) {
                     JavaIdentifier id = currentIdentifier.get();
-                    String result = JOptionPane.showInputDialog("Set New Comment For: \n" + id.getFriendlyDisplay());
+                    String result = JOptionPane.showInputDialog("Set New Comment For: \n" + id.getFriendlyDisplay(), id.getComment());
                     if (result != null) {
                         id.setComment(result);
                     }
@@ -233,7 +233,7 @@ public class ClassFilePage extends TypePage {
             try {
                 Color c = Color.decode("0x7FFFAA");
                 SmartHighlightPainter painter = new SmartHighlightPainter(
-                    new Color(c.getRed(), c.getGreen(), c.getBlue(), 127));
+                    new Color(c.getRed(), c.getGreen(), c.getBlue(), 77));
                 Document doc = textArea.getDocument();
                 for (DescData descData : descMap.values()) {
                     if (!descData.identifier.hasAlias()) {
