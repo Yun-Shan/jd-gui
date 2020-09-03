@@ -418,7 +418,7 @@ public class ClassFilePage extends TypePage {
 
         @Override
         public void printDeclaration(int type, String internalTypeName, String name, String descriptor) {
-            name = this.getAlias(type, internalTypeName, name, descriptor);
+            String alias = this.getAlias(type, internalTypeName, name, descriptor);
 
             if (internalTypeName == null) internalTypeName = "null";
             if (name == null) name = "null";
@@ -426,24 +426,24 @@ public class ClassFilePage extends TypePage {
 
             switch (type) {
                 case Printer.TYPE:
-                    TypePage.DeclarationData data = new TypePage.DeclarationData(stringBuffer.length(), name.length(), internalTypeName, null, null);
+                    TypePage.DeclarationData data = new TypePage.DeclarationData(stringBuffer.length(), alias.length(), internalTypeName, null, null);
                     declarations.put(internalTypeName, data);
                     typeDeclarations.put(stringBuffer.length(), data);
                     break;
                 case Printer.CONSTRUCTOR:
-                    declarations.put(internalTypeName + "-<init>-" + descriptor, new TypePage.DeclarationData(stringBuffer.length(), name.length(), internalTypeName, "<init>", descriptor));
+                    declarations.put(internalTypeName + "-<init>-" + descriptor, new TypePage.DeclarationData(stringBuffer.length(), alias.length(), internalTypeName, "<init>", descriptor));
                     break;
                 default:
-                    declarations.put(internalTypeName + '-' + name + '-' + descriptor, new TypePage.DeclarationData(stringBuffer.length(), name.length(), internalTypeName, name, descriptor));
+                    declarations.put(internalTypeName + '-' + name + '-' + descriptor, new TypePage.DeclarationData(stringBuffer.length(), alias.length(), internalTypeName, name, descriptor));
                     break;
             }
 
-            super.printDeclaration(type, internalTypeName, name, descriptor);
+            super.printDeclaration(type, internalTypeName, alias, descriptor);
         }
 
         @Override
         public void printReference(int type, String internalTypeName, String name, String descriptor, String ownerInternalName) {
-            name = this.getAlias(type, internalTypeName, name, descriptor);
+            String alias = this.getAlias(type, internalTypeName, name, descriptor);
 
             if (internalTypeName == null) internalTypeName = "null";
             if (name == null) name = "null";
@@ -451,16 +451,16 @@ public class ClassFilePage extends TypePage {
 
             switch (type) {
                 case TYPE:
-                    addHyperlink(new TypePage.HyperlinkReferenceData(stringBuffer.length(), name.length(), newReferenceData(internalTypeName, null, null, ownerInternalName)));
+                    addHyperlink(new TypePage.HyperlinkReferenceData(stringBuffer.length(), alias.length(), newReferenceData(internalTypeName, null, null, ownerInternalName)));
                     break;
                 case CONSTRUCTOR:
-                    addHyperlink(new TypePage.HyperlinkReferenceData(stringBuffer.length(), name.length(), newReferenceData(internalTypeName, "<init>", descriptor, ownerInternalName)));
+                    addHyperlink(new TypePage.HyperlinkReferenceData(stringBuffer.length(), alias.length(), newReferenceData(internalTypeName, "<init>", descriptor, ownerInternalName)));
                     break;
                 default:
-                    addHyperlink(new TypePage.HyperlinkReferenceData(stringBuffer.length(), name.length(), newReferenceData(internalTypeName, name, descriptor, ownerInternalName)));
+                    addHyperlink(new TypePage.HyperlinkReferenceData(stringBuffer.length(), alias.length(), newReferenceData(internalTypeName, name, descriptor, ownerInternalName)));
                     break;
             }
-            super.printReference(type, internalTypeName, name, descriptor, ownerInternalName);
+            super.printReference(type, internalTypeName, alias, descriptor, ownerInternalName);
         }
 
         private String getAlias(int type, String internalTypeName, String name, String descriptor) {
