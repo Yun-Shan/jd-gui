@@ -9,6 +9,7 @@ package org.jd.gui.view.component;
 
 import org.fife.ui.rsyntaxtextarea.*;
 import org.fife.ui.rsyntaxtextarea.folding.FoldManager;
+import org.fife.ui.rsyntaxtextarea.modes.JavaTokenMaker;
 import org.fife.ui.rtextarea.*;
 import org.jd.gui.api.feature.ContentSearchable;
 import org.jd.gui.api.feature.LineNumberNavigable;
@@ -48,6 +49,11 @@ public class AbstractTextPage extends JPanel implements LineNumberNavigable, Con
 
     protected Map<String, String> preferences;
 
+    static {
+        AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory)TokenMakerFactory.getDefaultInstance();
+        atmf.putMapping(SyntaxConstants.SYNTAX_STYLE_JAVA, "org.jd.gui.util.decompiler.JavaTokenMaker");
+    }
+
     public AbstractTextPage() {
         super(new BorderLayout());
 
@@ -80,7 +86,7 @@ public class AbstractTextPage extends JPanel implements LineNumberNavigable, Con
             Theme theme = Theme.load(getClass().getClassLoader().getResourceAsStream("rsyntaxtextarea/themes/eclipse.xml"));
             theme.apply(textArea);
         } catch (IOException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
 
         scrollPane = new RTextScrollPane(textArea);
@@ -121,7 +127,7 @@ public class AbstractTextPage extends JPanel implements LineNumberNavigable, Con
                     viewPosition.y = Math.max(viewPosition.y +newY - y, 0);
                     scrollPane.getViewport().setViewPosition(viewPosition);
                 } catch (BadLocationException ee) {
-                    assert ExceptionUtil.printStackTrace(ee);
+                    ExceptionUtil.printStackTrace(ee);
                 }
             } else {
                 // Call default listeners
@@ -185,12 +191,12 @@ public class AbstractTextPage extends JPanel implements LineNumberNavigable, Con
                                 setCaretPositionAndCenter(start, end, r);
                             }
                         } catch (BadLocationException e) {
-                            assert ExceptionUtil.printStackTrace(e);
+                            ExceptionUtil.printStackTrace(e);
                         }
                     });
                 }
             } catch (BadLocationException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
             }
         }
     }
@@ -200,7 +206,7 @@ public class AbstractTextPage extends JPanel implements LineNumberNavigable, Con
             try {
                 r = r.union(textArea.modelToView(end));
             } catch (BadLocationException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
             }
         }
 
@@ -238,7 +244,7 @@ public class AbstractTextPage extends JPanel implements LineNumberNavigable, Con
         try {
             return textArea.getLineOfOffset(textArea.getDocument().getLength()) + 1;
         } catch (BadLocationException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
             return 0;
         }
     }
@@ -247,7 +253,7 @@ public class AbstractTextPage extends JPanel implements LineNumberNavigable, Con
         try {
             textArea.setCaretPosition(textArea.getLineStartOffset(lineNumber-1));
         } catch (BadLocationException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
     }
 
@@ -324,7 +330,7 @@ public class AbstractTextPage extends JPanel implements LineNumberNavigable, Con
                     goToLineNumber(Integer.parseInt(lineNumber));
                     return true;
                 } catch (NumberFormatException e) {
-                    assert ExceptionUtil.printStackTrace(e);
+                    ExceptionUtil.printStackTrace(e);
                 }
             } else if (parameters.containsKey("position")) {
                 String position = parameters.get("position");
@@ -336,7 +342,7 @@ public class AbstractTextPage extends JPanel implements LineNumberNavigable, Con
                         return true;
                     }
                 } catch (NumberFormatException e) {
-                    assert ExceptionUtil.printStackTrace(e);
+                    ExceptionUtil.printStackTrace(e);
                 }
             } else if (parameters.containsKey("highlightFlags")) {
                 String highlightFlags = parameters.get("highlightFlags");
@@ -379,7 +385,7 @@ public class AbstractTextPage extends JPanel implements LineNumberNavigable, Con
                 }
             }
         } catch (UnsupportedEncodingException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
 
         return parameters;
@@ -421,7 +427,7 @@ public class AbstractTextPage extends JPanel implements LineNumberNavigable, Con
             try {
                 textArea.setFont(textArea.getFont().deriveFont(Float.parseFloat(fontSize)));
             } catch (Exception e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
             }
         }
 

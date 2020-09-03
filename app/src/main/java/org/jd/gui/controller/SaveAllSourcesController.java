@@ -60,7 +60,7 @@ public class SaveAllSourcesController implements SourcesSavable.Controller, Sour
                 try {
                     savable.save(api, this, this, path);
                 } catch (Exception e) {
-                    assert ExceptionUtil.printStackTrace(e);
+                    ExceptionUtil.printStackTrace(e);
                     saveAllSourcesView.showActionFailedDialog();
                     cancel = true;
                 }
@@ -69,7 +69,7 @@ public class SaveAllSourcesController implements SourcesSavable.Controller, Sour
                     Files.deleteIfExists(path);
                 }
             } catch (Throwable t) {
-                assert ExceptionUtil.printStackTrace(t);
+                ExceptionUtil.printStackTrace(t);
             }
 
             saveAllSourcesView.hide();

@@ -35,7 +35,7 @@ public class ClassFileLoaderProvider extends AbstractTypeFileLoaderProvider {
 
             return load(api, file, pathInFile);
         } catch (IOException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
             return false;
         }
     }

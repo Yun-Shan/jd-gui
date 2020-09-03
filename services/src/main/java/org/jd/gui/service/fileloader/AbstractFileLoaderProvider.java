@@ -56,10 +56,11 @@ public abstract class AbstractFileLoaderProvider implements FileLoader {
         return null;
     }
 
-    protected static class ContainerEntry implements Container.Entry {
+    public static class ContainerEntry implements Container.Entry {
         protected static final Container PARENT_CONTAINER = new Container() {
             @Override public String getType() { return "generic"; }
             @Override public Container.Entry getRoot() { return null; }
+            @Override public void onClose() { }
         };
 
         protected Collection<Container.Entry> children = Collections.emptyList();
@@ -77,6 +78,10 @@ public abstract class AbstractFileLoaderProvider implements FileLoader {
             }
         }
 
+        public File getFile() {
+            return this.file;
+        }
+
         @Override public Container getContainer() { return PARENT_CONTAINER; }
         @Override public Container.Entry getParent() { return null; }
         @Override public URI getUri() { return uri; }
@@ -90,7 +95,7 @@ public abstract class AbstractFileLoaderProvider implements FileLoader {
             try {
                 return new BufferedInputStream(new FileInputStream(file));
             } catch (FileNotFoundException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
                 return null;
             }
         }

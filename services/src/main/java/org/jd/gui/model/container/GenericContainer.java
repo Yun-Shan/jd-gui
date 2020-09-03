@@ -44,12 +44,15 @@ public class GenericContainer implements Container {
                 }
             };
         } catch (URISyntaxException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
     }
 
     public String getType() { return "generic"; }
     public Container.Entry getRoot() { return root; }
+    @Override
+    public void onClose() {
+    }
 
     protected class Entry implements Container.Entry {
         protected Container.Entry parent;
@@ -79,7 +82,7 @@ public class GenericContainer implements Container {
                     URI rootUri = root.getUri();
                     uri = new URI(rootUri.getScheme(), rootUri.getHost(), rootUri.getPath() + getPath(), null);
                 } catch (URISyntaxException e) {
-                    assert ExceptionUtil.printStackTrace(e);
+                    ExceptionUtil.printStackTrace(e);
                 }
             }
             return uri;
@@ -116,7 +119,7 @@ public class GenericContainer implements Container {
             try {
                 return Files.size(fsPath);
             } catch (IOException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
                 return -1L;
             }
         }
@@ -125,7 +128,7 @@ public class GenericContainer implements Container {
             try {
                 return Files.newInputStream(fsPath);
             } catch (IOException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
                 return null;
             }
         }
@@ -139,7 +142,7 @@ public class GenericContainer implements Container {
                         children = loadChildrenFromFileEntry();
                     }
                 } catch (IOException e) {
-                    assert ExceptionUtil.printStackTrace(e);
+                    ExceptionUtil.printStackTrace(e);
                 }
             }
             return children;

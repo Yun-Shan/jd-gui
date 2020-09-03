@@ -83,7 +83,7 @@ public class WebXmlFilePage extends TypeReferencePage implements UriGettable, In
                     }
                 }
             } catch (URISyntaxException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
             }
         }
     }

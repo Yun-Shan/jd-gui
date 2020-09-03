@@ -104,7 +104,7 @@ public class JarContainerEntryUtil {
 
             classReader.accept(classVisitor, ClassReader.SKIP_CODE|ClassReader.SKIP_DEBUG|ClassReader.SKIP_FRAMES);
         } catch (Exception e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
     }
 }

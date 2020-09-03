@@ -93,7 +93,7 @@ public class LogPage extends HyperlinkPage implements UriGettable, IndexesChange
                     api.openURI(x, y, entries, "lineNumber=" + lineNumber, null);
                 }
             } catch (Exception e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
             }
         }
     }

@@ -29,6 +29,10 @@ public class StringBuilderPrinter implements Printer {
     public int getMinorVersion() { return minorVersion; }
     public StringBuilder getStringBuffer() { return stringBuffer; }
 
+    protected int getCurrentPosition() {
+        return stringBuffer.length();
+    }
+
     protected void escape(String s) {
         if (unicodeEscape && (s != null)) {
             int length = s.length();

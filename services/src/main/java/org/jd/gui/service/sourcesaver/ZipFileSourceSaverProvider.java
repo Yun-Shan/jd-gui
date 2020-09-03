@@ -61,7 +61,7 @@ public class ZipFileSourceSaverProvider extends DirectorySourceSaverProvider {
                 Files.move(tmpFile.toPath(), path);
             }
         } catch (Exception e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
     }
 }

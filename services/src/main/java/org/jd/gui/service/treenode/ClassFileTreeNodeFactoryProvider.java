@@ -32,7 +32,7 @@ public class ClassFileTreeNodeFactoryProvider extends AbstractTypeFileTreeNodeFa
         try {
             Class.forName(DynamicPage.class.getName());
         } catch (Exception e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
     }
 
@@ -87,7 +87,7 @@ public class ClassFileTreeNodeFactoryProvider extends AbstractTypeFileTreeNodeFa
                 tip.append(minorVersion);
                 tip.append(')');
             } catch (IOException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
             }
 
             tip.append("</html>");

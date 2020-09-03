@@ -8,7 +8,7 @@
 package org.jd.gui;
 
 public class Constants {
-	public static final String APP_NAME = "JD-GUI";
+	public static final String APP_NAME = "JD-GUI-YS";
 
 	public static final int DEFAULT_WIDTH = 600;
 	public static final int DEFAULT_HEIGHT = 400;

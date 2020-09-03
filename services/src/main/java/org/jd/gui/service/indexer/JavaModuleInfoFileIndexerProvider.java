@@ -48,7 +48,7 @@ public class JavaModuleInfoFileIndexerProvider extends AbstractIndexerProvider {
             addToIndexes(indexes, "javaModuleReferences", javaModuleReferenceSet, entry);
             addToIndexes(indexes, "typeReferences", typeReferenceSet, entry);
         } catch (Exception e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
     }
 

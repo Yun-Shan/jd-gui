@@ -46,7 +46,7 @@ public class TextPage extends AbstractTextPage implements ContentCopyable, Conte
         try (OutputStreamWriter writer = new OutputStreamWriter(new NewlineOutputStream(os), "UTF-8")) {
             writer.write(textArea.getText());
         } catch (IOException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
     }
 }

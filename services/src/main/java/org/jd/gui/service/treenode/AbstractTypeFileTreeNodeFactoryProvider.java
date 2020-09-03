@@ -45,7 +45,7 @@ public abstract class AbstractTypeFileTreeNodeFactoryProvider extends AbstractTr
                     URI uri = entry.getUri();
                     this.uri = new URI(uri.getScheme(), uri.getHost(), uri.getPath(), fragment);
                 } catch (URISyntaxException e) {
-                    assert ExceptionUtil.printStackTrace(e);
+                    ExceptionUtil.printStackTrace(e);
                 }
             } else {
                 this.uri = entry.getUri();

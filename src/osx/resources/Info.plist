@@ -4,17 +4,17 @@
 	<dict>
 		<key>CFBundleDevelopmentRegion</key>		<string>English</string>
 		<key>CFBundleExecutable</key>				<string>universalJavaApplicationStub.sh</string>
-		<key>CFBundleName</key>						<string>JD-GUI</string>
-		<key>CFBundleGetInfoString</key>			<string>JD-GUI version ${VERSION}, Copyright 2008, 2019 Emmanuel Dupuy</string>
+		<key>CFBundleName</key>						<string>JD-GUI-YS</string>
+		<key>CFBundleGetInfoString</key>			<string>JD-GUI-YS version ${VERSION}, Copyright 2008, 2020 Emmanuel Dupuy, Enhanced By Yun-Shan</string>
 		<key>CFBundleIconFile</key>					<string>jd-gui.icns</string>
-		<key>CFBundleIdentifier</key>				<string>jd.jd-gui</string>
+		<key>CFBundleIdentifier</key>				<string>jd.jd-gui-ys</string>
 		<key>CFBundleInfoDictionaryVersion</key>	<string>6.0</string>
 		<key>CFBundlePackageType</key>				<string>APPL</string>
-		<key>CFBundleLongVersionString</key>		<string>${VERSION}, Copyright 2008, 2019 Emmanuel Dupuy</string>
+		<key>CFBundleLongVersionString</key>		<string>${VERSION}, Copyright 2008, 2020 Emmanuel Dupuy, Enhanced By Yun-Shan</string>
 		<key>CFBundleShortVersionString</key>		<string>${VERSION}</string>
 		<key>CSResourcesFileMapped</key>			<true/>
 		<key>LSRequiresCarbon</key>					<true/>
-		<key>NSHumanReadableCopyright</key>			<string>Copyright 2008, 2019 Emmanuel Dupuy</string>
+		<key>NSHumanReadableCopyright</key>			<string>Copyright 2008, 2020 Emmanuel Dupuy, Enhanced By Yun-Shan</string>
 		<key>NSPrincipalClass</key>					<string>NSApplication</string>
 		<key>NSHighResolutionCapable</key>			<true/>
 		<key>CFBundleDocumentTypes</key>

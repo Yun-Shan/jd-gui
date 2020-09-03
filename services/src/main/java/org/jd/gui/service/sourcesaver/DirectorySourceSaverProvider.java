@@ -47,7 +47,7 @@ public class DirectorySourceSaverProvider extends AbstractSourceSaverProvider {
             Files.createDirectories(path);
             saveContent(api, controller, listener, rootPath, path, entry);
         } catch (IOException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
     }
 

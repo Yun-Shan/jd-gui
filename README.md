@@ -1,4 +1,4 @@
-# JD-GUI
+# JD-GUI (Enhanced By Yun-Shan)
 
 JD-GUI, a standalone graphical utility that displays Java sources from CLASS files.
 
@@ -19,18 +19,18 @@ for instant access to methods and fields.
 > ./gradlew build 
 ```
 generate :
-- _"build/libs/jd-gui-x.y.z.jar"_
-- _"build/libs/jd-gui-x.y.z-min.jar"_
-- _"build/distributions/jd-gui-windows-x.y.z.zip"_
-- _"build/distributions/jd-gui-osx-x.y.z.tar"_
-- _"build/distributions/jd-gui-x.y.z.deb"_
-- _"build/distributions/jd-gui-x.y.z.rpm"_
+- _"build/libs/jd-gui-ys-x.y.z.jar"_
+- _"build/libs/jd-gui-ys-x.y.z-min.jar"_
+- _"build/distributions/jd-gui-ys-windows-x.y.z.zip"_
+- _"build/distributions/jd-gui-ys-osx-x.y.z.tar"_
+- _"build/distributions/jd-gui-ys-x.y.z.deb"_
+- _"build/distributions/jd-gui-ys-x.y.z.rpm"_
 
 ## How to launch JD-GUI ?
-- Double-click on _"jd-gui-x.y.z.jar"_
-- Double-click on _"jd-gui.exe"_ application from Windows
-- Double-click on _"JD-GUI"_ application from Mac OSX
-- Execute _"java -jar jd-gui-x.y.z.jar"_ or _"java -classpath jd-gui-x.y.z.jar org.jd.gui.App"_
+- Double-click on _"jd-gui-ys-x.y.z.jar"_
+- Double-click on _"jd-gui-ys.exe"_ application from Windows
+- Double-click on _"JD-GUI-YS"_ application from Mac OSX
+- Execute _"java -jar jd-gui-ys-x.y.z.jar"_ or _"java -classpath jd-gui-ys-x.y.z.jar org.jd.gui.App"_
 
 ## How to use JD-GUI ?
 - Open a file with menu "File > Open File..."
@@ -52,14 +52,9 @@ generate Eclipse project
 launch JD-GUI with your extensions
 
 ## How to uninstall JD-GUI ?
-- Java: Delete "jd-gui-x.y.z.jar" and "jd-gui.cfg".
-- Mac OSX: Drag and drop "JD-GUI" application into the trash.
-- Windows: Delete "jd-gui.exe" and "jd-gui.cfg".
+- Java: Delete "jd-gui-ys-x.y.z.jar" and "jd-gui.cfg".
+- Mac OSX: Drag and drop "JD-GUI-YS" application into the trash.
+- Windows: Delete "jd-gui-ys.exe" and "jd-gui.cfg".
 
 ## License
 Released under the [GNU GPL v3](LICENSE).
-
-## Donations
-Did JD-GUI help you to solve a critical situation? Do you use JD-Eclipse daily? What about making a donation?
-
-[![paypal](https://raw.githubusercontent.com/java-decompiler/jd-gui/master/src/website/img/btn_donate_euro.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=C88ZMVZ78RF22) [![paypal](https://raw.githubusercontent.com/java-decompiler/jd-gui/master/src/website/img/btn_donate_usd.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CRMXT4Y4QLQGU)

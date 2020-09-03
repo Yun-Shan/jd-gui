@@ -53,7 +53,7 @@ public class ZipFileLoaderProvider extends AbstractFileLoaderProvider {
                 }
             }
         } catch (URISyntaxException|IOException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
 
         return false;

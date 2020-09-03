@@ -138,7 +138,7 @@ public class OpenTypeController implements IndexesChangeListener {
                         }
                     }
                 } catch (Exception e) {
-                    assert ExceptionUtil.printStackTrace(e);
+                    ExceptionUtil.printStackTrace(e);
                 }
 
                 SwingUtilities.invokeLater(() -> {

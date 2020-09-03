@@ -17,7 +17,7 @@ import org.jd.gui.service.type.TypeFactoryService;
 import org.jd.gui.spi.TypeFactory;
 import org.jd.gui.util.exception.ExceptionUtil;
 import org.jd.gui.util.function.TriConsumer;
-import org.jd.gui.view.SearchInConstantPoolsView;
+import org.jd.gui.view.AdvancedSearchView;
 
 import javax.swing.*;
 import java.net.URI;
@@ -30,14 +30,14 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
-public class SearchInConstantPoolsController implements IndexesChangeListener {
+public class AdvancedSearchController implements IndexesChangeListener {
     protected static final int CACHE_MAX_ENTRIES = 5*20*9;
 
     protected API api;
     protected ScheduledExecutorService executor;
 
     protected JFrame mainFrame;
-    protected SearchInConstantPoolsView searchInConstantPoolsView;
+    protected AdvancedSearchView advancedSearchView;
     protected Map<String, Map<String, Collection>> cache;
     protected Set<DelegatingFilterContainer> delegatingFilterContainers = new HashSet<>();
     protected Collection<Future<Indexes>> collectionOfFutureIndexes;
@@ -45,12 +45,12 @@ public class SearchInConstantPoolsController implements IndexesChangeListener {
     protected long indexesHashCode = 0L;
 
     @SuppressWarnings("unchecked")
-    public SearchInConstantPoolsController(API api, ScheduledExecutorService executor, JFrame mainFrame) {
+    public AdvancedSearchController(API api, ScheduledExecutorService executor, JFrame mainFrame) {
         this.api = api;
         this.executor = executor;
         this.mainFrame = mainFrame;
         // Create UI
-        this.searchInConstantPoolsView = new SearchInConstantPoolsView(
+        this.advancedSearchView = new AdvancedSearchView(
             api, mainFrame,
             new BiConsumer<String, Integer>() {
                 @Override public void accept(String pattern, Integer flags) { updateTree(pattern, flags); }
@@ -76,11 +76,11 @@ public class SearchInConstantPoolsController implements IndexesChangeListener {
         long hashCode = collectionOfFutureIndexes.hashCode();
         if (hashCode != indexesHashCode) {
             // List of indexes has changed
-            updateTree(searchInConstantPoolsView.getPattern(), searchInConstantPoolsView.getFlags());
+            updateTree(advancedSearchView.getPattern(), advancedSearchView.getFlags());
             indexesHashCode = hashCode;
         }
         // Show
-        searchInConstantPoolsView.show();
+        advancedSearchView.show();
     }
 
     @SuppressWarnings("unchecked")
@@ -89,7 +89,7 @@ public class SearchInConstantPoolsController implements IndexesChangeListener {
 
         executor.execute(() -> {
             // Waiting the end of indexation...
-            searchInConstantPoolsView.showWaitCursor();
+            advancedSearchView.showWaitCursor();
 
             int matchingTypeCount = 0;
             int patternLength = pattern.length();
@@ -130,8 +130,8 @@ public class SearchInConstantPoolsController implements IndexesChangeListener {
 
             final int count = matchingTypeCount;
 
-            searchInConstantPoolsView.hideWaitCursor();
-            searchInConstantPoolsView.updateTree(delegatingFilterContainers, count);
+            advancedSearchView.hideWaitCursor();
+            advancedSearchView.updateTree(delegatingFilterContainers, count);
         });
     }
 
@@ -211,69 +211,69 @@ public class SearchInConstantPoolsController implements IndexesChangeListener {
     }
 
     protected void filter(Indexes indexes, String pattern, int flags, Set<Container.Entry> matchingEntries) {
-        boolean declarations = ((flags & SearchInConstantPoolsView.SEARCH_DECLARATION) != 0);
-        boolean references = ((flags & SearchInConstantPoolsView.SEARCH_REFERENCE) != 0);
+        boolean declarations = ((flags & AdvancedSearchView.SEARCH_DECLARATION) != 0);
+        boolean references = ((flags & AdvancedSearchView.SEARCH_REFERENCE) != 0);
 
-        if ((flags & SearchInConstantPoolsView.SEARCH_TYPE) != 0) {
+        if ((flags & AdvancedSearchView.SEARCH_TYPE) != 0) {
             if (declarations)
                 match(indexes, "typeDeclarations", pattern,
-                      SearchInConstantPoolsController::matchTypeEntriesWithChar,
-                      SearchInConstantPoolsController::matchTypeEntriesWithString, matchingEntries);
+                      AdvancedSearchController::matchTypeEntriesWithChar,
+                      AdvancedSearchController::matchTypeEntriesWithString, matchingEntries);
             if (references)
                 match(indexes, "typeReferences", pattern,
-                      SearchInConstantPoolsController::matchTypeEntriesWithChar,
-                      SearchInConstantPoolsController::matchTypeEntriesWithString, matchingEntries);
+                      AdvancedSearchController::matchTypeEntriesWithChar,
+                      AdvancedSearchController::matchTypeEntriesWithString, matchingEntries);
         }
 
-        if ((flags & SearchInConstantPoolsView.SEARCH_CONSTRUCTOR) != 0) {
+        if ((flags & AdvancedSearchView.SEARCH_CONSTRUCTOR) != 0) {
             if (declarations)
                 match(indexes, "constructorDeclarations", pattern,
-                      SearchInConstantPoolsController::matchTypeEntriesWithChar,
-                      SearchInConstantPoolsController::matchTypeEntriesWithString, matchingEntries);
+                      AdvancedSearchController::matchTypeEntriesWithChar,
+                      AdvancedSearchController::matchTypeEntriesWithString, matchingEntries);
             if (references)
                 match(indexes, "constructorReferences", pattern,
-                      SearchInConstantPoolsController::matchTypeEntriesWithChar,
-                      SearchInConstantPoolsController::matchTypeEntriesWithString, matchingEntries);
+                      AdvancedSearchController::matchTypeEntriesWithChar,
+                      AdvancedSearchController::matchTypeEntriesWithString, matchingEntries);
         }
 
-        if ((flags & SearchInConstantPoolsView.SEARCH_METHOD) != 0) {
+        if ((flags & AdvancedSearchView.SEARCH_METHOD) != 0) {
             if (declarations)
                 match(indexes, "methodDeclarations", pattern,
-                      SearchInConstantPoolsController::matchWithChar,
-                      SearchInConstantPoolsController::matchWithString, matchingEntries);
+                      AdvancedSearchController::matchWithChar,
+                      AdvancedSearchController::matchWithString, matchingEntries);
             if (references)
                 match(indexes, "methodReferences", pattern,
-                      SearchInConstantPoolsController::matchWithChar,
-                      SearchInConstantPoolsController::matchWithString, matchingEntries);
+                      AdvancedSearchController::matchWithChar,
+                      AdvancedSearchController::matchWithString, matchingEntries);
         }
 
-        if ((flags & SearchInConstantPoolsView.SEARCH_FIELD) != 0) {
+        if ((flags & AdvancedSearchView.SEARCH_FIELD) != 0) {
             if (declarations)
                 match(indexes, "fieldDeclarations", pattern,
-                      SearchInConstantPoolsController::matchWithChar,
-                      SearchInConstantPoolsController::matchWithString, matchingEntries);
+                      AdvancedSearchController::matchWithChar,
+                      AdvancedSearchController::matchWithString, matchingEntries);
             if (references)
                 match(indexes, "fieldReferences", pattern,
-                      SearchInConstantPoolsController::matchWithChar,
-                      SearchInConstantPoolsController::matchWithString, matchingEntries);
+                      AdvancedSearchController::matchWithChar,
+                      AdvancedSearchController::matchWithString, matchingEntries);
         }
 
-        if ((flags & SearchInConstantPoolsView.SEARCH_STRING) != 0) {
+        if ((flags & AdvancedSearchView.SEARCH_STRING) != 0) {
             if (declarations || references)
                 match(indexes, "strings", pattern,
-                      SearchInConstantPoolsController::matchWithChar,
-                      SearchInConstantPoolsController::matchWithString, matchingEntries);
+                      AdvancedSearchController::matchWithChar,
+                      AdvancedSearchController::matchWithString, matchingEntries);
         }
 
-        if ((flags & SearchInConstantPoolsView.SEARCH_MODULE) != 0) {
+        if ((flags & AdvancedSearchView.SEARCH_MODULE) != 0) {
             if (declarations)
                 match(indexes, "javaModuleDeclarations", pattern,
-                        SearchInConstantPoolsController::matchWithChar,
-                        SearchInConstantPoolsController::matchWithString, matchingEntries);
+                        AdvancedSearchController::matchWithChar,
+                        AdvancedSearchController::matchWithString, matchingEntries);
             if (references)
                 match(indexes, "javaModuleReferences", pattern,
-                        SearchInConstantPoolsController::matchWithChar,
-                        SearchInConstantPoolsController::matchWithString, matchingEntries);
+                        AdvancedSearchController::matchWithChar,
+                        AdvancedSearchController::matchWithString, matchingEntries);
         }
     }
 
@@ -432,21 +432,21 @@ public class SearchInConstantPoolsController implements IndexesChangeListener {
             sbPattern.append(pattern);
             sbPattern.append("&highlightFlags=");
 
-            if ((flags & SearchInConstantPoolsView.SEARCH_DECLARATION) != 0)
+            if ((flags & AdvancedSearchView.SEARCH_DECLARATION) != 0)
                 sbPattern.append('d');
-            if ((flags & SearchInConstantPoolsView.SEARCH_REFERENCE) != 0)
+            if ((flags & AdvancedSearchView.SEARCH_REFERENCE) != 0)
                 sbPattern.append('r');
-            if ((flags & SearchInConstantPoolsView.SEARCH_TYPE) != 0)
+            if ((flags & AdvancedSearchView.SEARCH_TYPE) != 0)
                 sbPattern.append('t');
-            if ((flags & SearchInConstantPoolsView.SEARCH_CONSTRUCTOR) != 0)
+            if ((flags & AdvancedSearchView.SEARCH_CONSTRUCTOR) != 0)
                 sbPattern.append('c');
-            if ((flags & SearchInConstantPoolsView.SEARCH_METHOD) != 0)
+            if ((flags & AdvancedSearchView.SEARCH_METHOD) != 0)
                 sbPattern.append('m');
-            if ((flags & SearchInConstantPoolsView.SEARCH_FIELD) != 0)
+            if ((flags & AdvancedSearchView.SEARCH_FIELD) != 0)
                 sbPattern.append('f');
-            if ((flags & SearchInConstantPoolsView.SEARCH_STRING) != 0)
+            if ((flags & AdvancedSearchView.SEARCH_STRING) != 0)
                 sbPattern.append('s');
-            if ((flags & SearchInConstantPoolsView.SEARCH_MODULE) != 0)
+            if ((flags & AdvancedSearchView.SEARCH_MODULE) != 0)
                 sbPattern.append('M');
 
             // TODO In a future release, add 'highlightScope' to display search results in correct type and inner-type
@@ -474,11 +474,11 @@ public class SearchInConstantPoolsController implements IndexesChangeListener {
 
     // --- IndexesChangeListener --- //
     public void indexesChanged(Collection<Future<Indexes>> collectionOfFutureIndexes) {
-        if (searchInConstantPoolsView.isVisible()) {
+        if (advancedSearchView.isVisible()) {
             // Update the list of containers
             this.collectionOfFutureIndexes = collectionOfFutureIndexes;
             // And refresh
-            updateTree(searchInConstantPoolsView.getPattern(), searchInConstantPoolsView.getFlags());
+            updateTree(advancedSearchView.getPattern(), advancedSearchView.getFlags());
         }
     }
 }

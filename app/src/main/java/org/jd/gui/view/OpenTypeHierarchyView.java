@@ -386,7 +386,7 @@ public class OpenTypeHierarchyView {
                 }
             }
         } catch (Exception e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
 
         return result;
@@ -413,7 +413,7 @@ public class OpenTypeHierarchyView {
                 }
             }
         } catch (Exception e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
 
         return result;

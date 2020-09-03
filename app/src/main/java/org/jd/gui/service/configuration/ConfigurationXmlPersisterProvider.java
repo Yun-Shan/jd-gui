@@ -17,6 +17,9 @@ import javax.xml.stream.*;
 import java.awt.*;
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 import java.util.jar.Manifest;
@@ -25,9 +28,52 @@ public class ConfigurationXmlPersisterProvider implements ConfigurationPersister
     protected static final String ERROR_BACKGROUND_COLOR = "JdGuiPreferences.errorBackgroundColor";
     protected static final String JD_CORE_VERSION = "JdGuiPreferences.jdCoreVersion";
 
-    protected static final File FILE = getConfigFile();
+    protected static final Path CONFIG_PATH = getConfigPath();
+    protected static final Path MAIN_CONFIG_FILE = CONFIG_PATH.resolve(Constants.CONFIG_FILENAME);
 
-    protected static File getConfigFile() {
+    private static Path getConfigPath() {
+        Path configPath = null;
+        String jdguiHome = System.getenv("JDGUI_HOME");
+        if (jdguiHome != null && !jdguiHome.isEmpty()) {
+            configPath = checkPath(jdguiHome);
+        }
+
+        if (configPath == null) {
+            String platformDataHome;
+            if (PlatformService.getInstance().isLinux()) {
+                // See: http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
+                platformDataHome = System.getenv("XDG_CONFIG_HOME");
+            } else if (PlatformService.getInstance().isWindows()) {
+                // See: http://blogs.msdn.com/b/patricka/archive/2010/03/18/where-should-i-store-my-data-and-configuration-files-if-i-target-multiple-os-versions.aspx
+                platformDataHome = System.getenv("APPDATA");
+            } else {
+                platformDataHome = System.getProperty("user.home");
+            }
+            if (platformDataHome != null && !platformDataHome.isEmpty()) {
+                configPath = checkPath(platformDataHome + File.separator + ".jd-gui");
+            }
+        }
+
+        if (configPath == null) {
+            configPath = checkPath("./.jd-gui");
+        }
+        return configPath;
+    }
+
+    private static Path checkPath(String strPath) {
+        Path path = Paths.get(strPath).normalize();
+        try {
+            if (Files.notExists(path)) {
+                Files.createDirectories(path);
+            }
+            return path;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    protected static File getOldConfigFile() {
         String configFilePath = System.getProperty(Constants.CONFIG_FILENAME);
 
         if (configFilePath != null) {
@@ -70,12 +116,13 @@ public class ConfigurationXmlPersisterProvider implements ConfigurationPersister
         // Default values
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-        int w = (screenSize.width>Constants.DEFAULT_WIDTH) ? Constants.DEFAULT_WIDTH : screenSize.width;
-        int h = (screenSize.height>Constants.DEFAULT_HEIGHT) ? Constants.DEFAULT_HEIGHT : screenSize.height;
+        int w = Math.min(screenSize.width, Constants.DEFAULT_WIDTH);
+        int h = Math.min(screenSize.height, Constants.DEFAULT_HEIGHT);
         int x = (screenSize.width-w)/2;
         int y = (screenSize.height-h)/2;
 
         Configuration config = new Configuration();
+        config.setConfigPath(CONFIG_PATH);
         config.setMainWindowLocation(new Point(x, y));
         config.setMainWindowSize(new Dimension(w, h));
         config.setMainWindowMaximize(false);
@@ -89,9 +136,19 @@ public class ConfigurationXmlPersisterProvider implements ConfigurationPersister
         config.setRecentLoadDirectory(recentSaveDirectory);
         config.setRecentSaveDirectory(recentSaveDirectory);
 
-        if (FILE.exists()) {
-            try (FileInputStream fis = new FileInputStream(FILE)) {
-                XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(fis);
+        if (Files.notExists(MAIN_CONFIG_FILE)) {
+            Path oldConfigFile = getOldConfigFile().toPath();
+            if (Files.exists(oldConfigFile)) {
+                try {
+                    Files.copy(oldConfigFile, MAIN_CONFIG_FILE);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        if (Files.exists(MAIN_CONFIG_FILE)) {
+            try (InputStream inputStream = Files.newInputStream(MAIN_CONFIG_FILE)) {
+                XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(inputStream);
 
                 // Load values
                 String name = "";
@@ -113,6 +170,8 @@ public class ConfigurationXmlPersisterProvider implements ConfigurationPersister
                                 case "/configuration/gui/mainWindow/size":
                                     w = Integer.parseInt(reader.getAttributeValue(null, "w"));
                                     h = Integer.parseInt(reader.getAttributeValue(null, "h"));
+                                    break;
+                                default:
                                     break;
                             }
                             break;
@@ -153,6 +212,8 @@ public class ConfigurationXmlPersisterProvider implements ConfigurationPersister
                                     break;
                             }
                             break;
+                        default:
+                            break;
                     }
                 }
 
@@ -171,7 +232,7 @@ public class ConfigurationXmlPersisterProvider implements ConfigurationPersister
 
                 reader.close();
             } catch (Exception e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
             }
         }
 
@@ -197,7 +258,7 @@ public class ConfigurationXmlPersisterProvider implements ConfigurationPersister
                 }
             }
         } catch (IOException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
 
         return "SNAPSHOT";
@@ -208,8 +269,8 @@ public class ConfigurationXmlPersisterProvider implements ConfigurationPersister
         Point l = configuration.getMainWindowLocation();
         Dimension s = configuration.getMainWindowSize();
 
-        try (FileOutputStream fos = new FileOutputStream(FILE)) {
-            XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(fos);
+        try (OutputStream outputStream = Files.newOutputStream(MAIN_CONFIG_FILE)) {
+            XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(outputStream);
 
             // Save values
             writer.writeStartDocument();
@@ -287,7 +348,7 @@ public class ConfigurationXmlPersisterProvider implements ConfigurationPersister
             writer.writeEndDocument();
             writer.close();
         } catch (Exception e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
     }
 }

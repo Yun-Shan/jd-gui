@@ -42,7 +42,7 @@ public class UriUtil {
 
             return new URI(uri.getScheme(), uri.getHost(), path, query, fragment);
         } catch (URISyntaxException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
             return uri;
         }
     }
@@ -67,7 +67,7 @@ public class UriUtil {
                     }
                 }
             } catch (Exception e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
             }
         }
 

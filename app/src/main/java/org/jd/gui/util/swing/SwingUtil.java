@@ -82,7 +82,7 @@ public class SwingUtil {
             fixGtkThickness(style, "yThickness");
         } catch (Exception e) {
             // Silently ignored. Workaround can't be applied.
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
     }
 

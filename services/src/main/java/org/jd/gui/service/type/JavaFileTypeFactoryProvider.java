@@ -82,7 +82,7 @@ public class JavaFileTypeFactoryProvider extends AbstractTypeFactoryProvider {
             try (InputStream inputStream = entry.getInputStream()) {
                 ANTLRJavaParser.parse(new ANTLRInputStream(inputStream), listener = new Listener(entry));
             } catch (IOException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
                 listener = null;
             }
 

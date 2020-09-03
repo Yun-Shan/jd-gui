@@ -64,7 +64,7 @@ public class ViewerPreferencesProvider extends JPanel implements PreferencesPane
                 Theme theme = Theme.load(getClass().getClassLoader().getResourceAsStream("rsyntaxtextarea/themes/eclipse.xml"));
                 theme.apply(textArea);
             } catch (IOException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
             }
 
             fontSize = String.valueOf(textArea.getFont().getSize());
@@ -85,7 +85,7 @@ public class ViewerPreferencesProvider extends JPanel implements PreferencesPane
             int i = Integer.valueOf(fontSizeTextField.getText());
             return (i >= MIN_VALUE) && (i <= MAX_VALUE);
         } catch (NumberFormatException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
             return false;
         }
     }

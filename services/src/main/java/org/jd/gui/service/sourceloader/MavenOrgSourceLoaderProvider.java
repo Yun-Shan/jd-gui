@@ -105,7 +105,7 @@ public class MavenOrgSourceLoaderProvider implements SourceLoader {
 
                 zis.closeEntry();
             } catch (IOException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
             }
         }
 
@@ -219,7 +219,7 @@ public class MavenOrgSourceLoaderProvider implements SourceLoader {
                     return tmpFile;
                 }
             } catch (Exception e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
             }
         }
 
@@ -249,7 +249,7 @@ public class MavenOrgSourceLoaderProvider implements SourceLoader {
                                                     properties.load(is);
                                                     return properties;
                                                 } catch (Exception e) {
-                                                    assert ExceptionUtil.printStackTrace(e);
+                                                    ExceptionUtil.printStackTrace(e);
                                                 }
                                             }
                                         }

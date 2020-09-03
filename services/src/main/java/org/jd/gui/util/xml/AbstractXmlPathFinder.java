@@ -84,7 +84,7 @@ public abstract class AbstractXmlPathFinder {
                 }
             }
         } catch (XMLStreamException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
     }
 

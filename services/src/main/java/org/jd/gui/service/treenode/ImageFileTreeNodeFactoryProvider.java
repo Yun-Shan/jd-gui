@@ -63,7 +63,7 @@ public class ImageFileTreeNodeFactoryProvider extends FileTreeNodeFactoryProvide
 
                 add(scrollPane, BorderLayout.CENTER);
             } catch (IOException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
             }
         }
 

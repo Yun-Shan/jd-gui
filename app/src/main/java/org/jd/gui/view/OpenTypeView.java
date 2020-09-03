@@ -98,7 +98,7 @@ public class OpenTypeView {
                     try {
                         changedPatternCallback.accept(e.getDocument().getText(0, e.getDocument().getLength()));
                     } catch (BadLocationException ex) {
-                        assert ExceptionUtil.printStackTrace(ex);
+                        ExceptionUtil.printStackTrace(ex);
                     }
                 }
             });

@@ -91,7 +91,7 @@ public class XmlFilePage extends TypeReferencePage implements UriGettable, Index
                     api.openURI(x, y, entries, null, data.internalTypeName);
                 }
             } catch (URISyntaxException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
             }
         }
     }

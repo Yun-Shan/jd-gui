@@ -11,12 +11,16 @@ import org.jd.gui.Constants;
 
 import java.awt.*;
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Configuration {
+
+    protected Path configPath;
+
 	protected Point mainWindowLocation;
     protected Dimension mainWindowSize;
     protected boolean mainWindowMaximize;
@@ -28,6 +32,14 @@ public class Configuration {
     protected File recentSaveDirectory;
 
     protected Map<String, String> preferences = new HashMap<>();
+
+    public Path getConfigPath() {
+        return this.configPath;
+    }
+
+    public void setConfigPath(Path configPath) {
+        this.configPath = configPath;
+    }
 
     public Point getMainWindowLocation() {
         return mainWindowLocation;

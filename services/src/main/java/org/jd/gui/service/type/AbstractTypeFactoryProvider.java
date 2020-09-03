@@ -36,7 +36,7 @@ public abstract class AbstractTypeFactoryProvider implements TypeFactory {
                 properties.load(is);
             }
         } catch (IOException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
 
         init(properties);

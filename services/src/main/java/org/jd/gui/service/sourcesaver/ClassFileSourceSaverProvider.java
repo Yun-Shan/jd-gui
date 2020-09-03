@@ -131,15 +131,15 @@ public class ClassFileSourceSaverProvider extends AbstractSourceSaverProvider {
             try (PrintStream ps = new PrintStream(new NewlineOutputStream(Files.newOutputStream(path)), true, "UTF-8")) {
                 ps.print(stringBuffer.toString());
             } catch (IOException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
             }
         } catch (Throwable t) {
-            assert ExceptionUtil.printStackTrace(t);
+            ExceptionUtil.printStackTrace(t);
 
             try (BufferedWriter writer = Files.newBufferedWriter(path, Charset.defaultCharset())) {
                 writer.write("// INTERNAL ERROR //");
             } catch (IOException ee) {
-                assert ExceptionUtil.printStackTrace(ee);
+                ExceptionUtil.printStackTrace(ee);
             }
         }
     }

@@ -57,7 +57,7 @@ public abstract class AbstractTypeFileLoaderProvider extends AbstractFileLoaderP
                     ((UriOpenable)mainPanel).openUri(uri);
                     return true;
                 } catch (URISyntaxException e) {
-                    assert ExceptionUtil.printStackTrace(e);
+                    ExceptionUtil.printStackTrace(e);
                 }
             } else {
                 return mainPanel != null;

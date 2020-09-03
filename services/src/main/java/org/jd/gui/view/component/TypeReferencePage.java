@@ -39,7 +39,7 @@ public abstract class TypeReferencePage extends HyperlinkPage {
                     goToLineNumber(Integer.parseInt(lineNumber));
                     return true;
                 } catch (NumberFormatException e) {
-                    assert ExceptionUtil.printStackTrace(e);
+                    ExceptionUtil.printStackTrace(e);
                 }
             } else if (parameters.containsKey("position")) {
                 String position = parameters.get("position");
@@ -50,7 +50,7 @@ public abstract class TypeReferencePage extends HyperlinkPage {
                         ranges.add(new DocumentRange(pos, pos));
                     }
                 } catch (NumberFormatException e) {
-                    assert ExceptionUtil.printStackTrace(e);
+                    ExceptionUtil.printStackTrace(e);
                 }
             } else {
                 String highlightFlags = parameters.get("highlightFlags");

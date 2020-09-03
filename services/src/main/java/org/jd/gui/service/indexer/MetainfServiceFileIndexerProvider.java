@@ -43,7 +43,7 @@ public class MetainfServiceFileIndexerProvider extends AbstractIndexerProvider {
                 }
             }
         } catch (IOException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
     }
 }

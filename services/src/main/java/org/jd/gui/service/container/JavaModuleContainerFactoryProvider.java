@@ -30,7 +30,7 @@ public class JavaModuleContainerFactoryProvider implements ContainerFactory {
             try {
                 return rootPath.getFileSystem().provider().getScheme().equals("file") && Files.exists(rootPath.resolve("classes"));
             } catch (InvalidPathException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
                 return false;
             }
         }

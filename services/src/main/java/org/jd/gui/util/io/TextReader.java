@@ -17,7 +17,7 @@ public class TextReader {
         try {
             return getText(new FileInputStream(file));
         } catch (IOException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
             return "";
         }
     }
@@ -33,7 +33,7 @@ public class TextReader {
                 sb.append(charBuffer, 0, nbCharRead);
             }
         } catch (IOException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
 
         return sb.toString();

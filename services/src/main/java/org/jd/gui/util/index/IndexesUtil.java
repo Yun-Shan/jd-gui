@@ -38,7 +38,7 @@ public class IndexesUtil {
                 }
             }
         } catch (Exception e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
 
         return false;
@@ -61,7 +61,7 @@ public class IndexesUtil {
                 }
             }
         } catch (Exception e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
 
         return entries;

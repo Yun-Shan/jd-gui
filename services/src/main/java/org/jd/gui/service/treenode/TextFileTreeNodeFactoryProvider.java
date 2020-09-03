@@ -35,7 +35,7 @@ public class TextFileTreeNodeFactoryProvider extends FileTreeNodeFactoryProvider
         try {
             Theme.load(TextFileTreeNodeFactoryProvider.class.getClassLoader().getResourceAsStream("rsyntaxtextarea/themes/eclipse.xml"));
         } catch (IOException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
     }
 

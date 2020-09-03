@@ -1,8 +1,9 @@
 # java -jar proguard.jar @proguard.config.txt
 
-#-injars       jd-gui-1.4.2.jar
-#-outjars      jd-gui-1.4.2-min.jar
-#-libraryjars  C:/Program Files/Java/jre1.8.0_121/lib/rt.jar
+#-injars       jd-gui-ys-x.y.z.jar
+#-outjars      jd-gui-ys-x.y.z-min.jar
+#-libraryjars  <java.home>/lib/rt.jar
+#-libraryjars  <java.home>/lib/jce.jar
 #-printmapping myapplication.map
 
 -keep public class org.jd.gui.App {
@@ -28,6 +29,7 @@
 -keep class org.fife.ui.rsyntaxtextarea.modes.HTMLTokenMaker
 -keep class org.fife.ui.rsyntaxtextarea.modes.JavaScriptTokenMaker
 -keep class org.fife.ui.rsyntaxtextarea.modes.JavaTokenMaker
+-keep class org.jd.gui.util.decompiler.JavaTokenMaker
 -keep class org.fife.ui.rsyntaxtextarea.modes.JsonTokenMaker
 -keep class org.fife.ui.rsyntaxtextarea.modes.JSPTokenMaker
 -keep class org.fife.ui.rsyntaxtextarea.modes.PlainTextTokenMaker

@@ -75,6 +75,7 @@ public class MainView<T extends JComponent & UriGettable> implements UriOpenable
             ActionListener backwardActionListener,
             ActionListener forwardActionListener,
             ActionListener searchActionListener,
+            ActionListener advancedSearchActionListener,
             ActionListener jdWebSiteActionListener,
             ActionListener jdGuiIssuesActionListener,
             ActionListener jdCoreIssuesActionListener,
@@ -187,6 +188,7 @@ public class MainView<T extends JComponent & UriGettable> implements UriOpenable
             backwardAction = newAction("Back", newImageIcon("/org/jd/gui/images/backward_nav.png"), false, backwardActionListener);
             forwardAction = newAction("Forward", newImageIcon("/org/jd/gui/images/forward_nav.png"), false, forwardActionListener);
             Action searchAction = newAction("Search...", newImageIcon("/org/jd/gui/images/search_src.png"), false, searchActionListener);
+            Action advancedSearchAction = newAction("Advanced Search...", newImageIcon("/org/jd/gui/images/search_src.png"), false, advancedSearchActionListener);
             Action jdWebSiteAction = newAction("JD Web site", browser, "Open JD Web site", jdWebSiteActionListener);
             Action jdGuiIssuesActionAction = newAction("JD-GUI issues", browser, "Open JD-GUI issues page", jdGuiIssuesActionListener);
             Action jdCoreIssuesActionAction = newAction("JD-Core issues", browser, "Open JD-Core issues page", jdCoreIssuesActionListener);
@@ -230,6 +232,7 @@ public class MainView<T extends JComponent & UriGettable> implements UriOpenable
             menu = new JMenu("Search");
             menuBar.add(menu);
             menu.add(searchAction).setAccelerator(KeyStroke.getKeyStroke('S', menuShortcutKeyMask|InputEvent.SHIFT_MASK));
+            menu.add(advancedSearchAction).setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.SHIFT_MASK));
             menu = new JMenu("Help");
             menuBar.add(menu);
             if (browser) {
@@ -255,6 +258,7 @@ public class MainView<T extends JComponent & UriGettable> implements UriOpenable
             toolBar.addSeparator();
             toolBar.add(new IconButton(openTypeAction));
             toolBar.add(new IconButton(searchAction));
+            toolBar.add(new IconButton(advancedSearchAction));
             toolBar.addSeparator();
             toolBar.add(new IconButton(backwardAction));
             toolBar.add(new IconButton(forwardAction));
@@ -319,6 +323,7 @@ public class MainView<T extends JComponent & UriGettable> implements UriOpenable
                     closeAction.setEnabled(enabled);
                     openTypeAction.setEnabled(enabled);
                     searchAction.setEnabled(enabled);
+                    advancedSearchAction.setEnabled(enabled);
                     saveAllSourcesAction.setEnabled((mainTabbedPanel.getTabbedPane().getSelectedComponent() instanceof SourcesSavable));
 
                     if (tabCount < lastTabCount) {
@@ -408,7 +413,7 @@ public class MainView<T extends JComponent & UriGettable> implements UriOpenable
         try {
             return doc.getText(0, doc.getLength());
         } catch (BadLocationException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
             return "";
         }
     }

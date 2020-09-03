@@ -32,7 +32,7 @@ public class ModuleInfoFileTreeNodeFactoryProvider extends ClassFileTreeNodeFact
         try {
             Class.forName(ModuleInfoFilePage.class.getName());
         } catch (Exception e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
     }
 

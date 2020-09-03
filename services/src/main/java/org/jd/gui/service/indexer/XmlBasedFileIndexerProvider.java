@@ -90,13 +90,13 @@ public class XmlBasedFileIndexerProvider extends AbstractIndexerProvider {
                 }
             }
         } catch (Exception e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         } finally {
             if (reader != null) {
                 try {
                     reader.close();
                 } catch (XMLStreamException e) {
-                    assert ExceptionUtil.printStackTrace(e);
+                    ExceptionUtil.printStackTrace(e);
                 }
             }
         }

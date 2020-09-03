@@ -62,6 +62,7 @@ public class MainController implements API {
     protected OpenTypeHierarchyController openTypeHierarchyController;
     protected PreferencesController preferencesController;
     protected SearchInConstantPoolsController searchInConstantPoolsController;
+    protected AdvancedSearchController advancedSearchController;
     protected SaveAllSourcesController saveAllSourcesController;
     protected SelectLocationController selectLocationController;
     protected AboutController aboutController;
@@ -104,6 +105,7 @@ public class MainController implements API {
                 e -> openURI(history.backward()),
                 e -> openURI(history.forward()),
                 e -> onSearch(),
+                e -> onAdvancedSearch(),
                 e -> onJdWebSite(),
                 e -> onJdGuiIssues(),
                 e -> onJdCoreIssues(),
@@ -115,7 +117,12 @@ public class MainController implements API {
         });
 	}
 
-	// --- Show GUI --- //
+    @Override
+    public Path getConfigPath() {
+        return this.configuration.getConfigPath();
+    }
+
+    // --- Show GUI --- //
     @SuppressWarnings("unchecked")
 	public void show(List<File> files) {
         SwingUtil.invokeLater(() -> {
@@ -146,6 +153,7 @@ public class MainController implements API {
                 containerChangeListeners.add(openTypeHierarchyController = new OpenTypeHierarchyController(MainController.this, executor, mainFrame));
                 goToController = new GoToController(configuration, mainFrame);
                 containerChangeListeners.add(searchInConstantPoolsController = new SearchInConstantPoolsController(MainController.this, executor, mainFrame));
+                containerChangeListeners.add(advancedSearchController = new AdvancedSearchController(MainController.this, executor, mainFrame));
                 preferencesController = new PreferencesController(configuration, mainFrame, PreferencesPanelService.getInstance().getProviders());
                 selectLocationController = new SelectLocationController(MainController.this, mainFrame);
                 aboutController = new AboutController(mainFrame);
@@ -235,7 +243,7 @@ public class MainController implements API {
         try (OutputStream os = new FileOutputStream(selectedFile)) {
             ((ContentSavable)currentPage).save(this, os);
         } catch (IOException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
     }
 
@@ -289,7 +297,7 @@ public class MainController implements API {
                 }
             }
         } catch (Exception e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
     }
 
@@ -339,6 +347,10 @@ public class MainController implements API {
         searchInConstantPoolsController.show(getCollectionOfFutureIndexes(), uri -> openURI(uri));
     }
 
+    protected void onAdvancedSearch() {
+        advancedSearchController.show(getCollectionOfFutureIndexes(), uri -> openURI(uri));
+    }
+
     protected void onFindPrevious() {
         if (currentPage instanceof ContentSearchable) {
             ContentSearchable cs = (ContentSearchable)currentPage;
@@ -351,9 +363,9 @@ public class MainController implements API {
             Desktop desktop = Desktop.getDesktop();
             if (desktop.isSupported(Desktop.Action.BROWSE)) {
                 try {
-                    desktop.browse(URI.create("http://java-decompiler.github.io"));
+                    desktop.browse(URI.create("https://github.com/Yun-Shan/jd-gui"));
                 } catch (IOException e) {
-                    assert ExceptionUtil.printStackTrace(e);
+                    ExceptionUtil.printStackTrace(e);
                 }
             }
         }
@@ -364,9 +376,9 @@ public class MainController implements API {
             Desktop desktop = Desktop.getDesktop();
             if (desktop.isSupported(Desktop.Action.BROWSE)) {
                 try {
-                    desktop.browse(URI.create("https://github.com/java-decompiler/jd-gui/issues"));
+                    desktop.browse(URI.create("https://github.com/Yun-Shan/jd-gui/issues"));
                 } catch (IOException e) {
-                    assert ExceptionUtil.printStackTrace(e);
+                    ExceptionUtil.printStackTrace(e);
                 }
             }
         }
@@ -379,7 +391,7 @@ public class MainController implements API {
                 try {
                     desktop.browse(URI.create("https://github.com/java-decompiler/jd-core/issues"));
                 } catch (IOException e) {
-                    assert ExceptionUtil.printStackTrace(e);
+                    ExceptionUtil.printStackTrace(e);
                 }
             }
         }
@@ -492,7 +504,7 @@ public class MainController implements API {
                     openFiles((List<File>)info.getTransferable().getTransferData(DataFlavor.javaFileListFlavor));
                     return true;
                 } catch (Exception e) {
-                    assert ExceptionUtil.printStackTrace(e);
+                    ExceptionUtil.printStackTrace(e);
                 }
             }
             return false;
@@ -664,7 +676,7 @@ public class MainController implements API {
                         }
                     }
                 } catch (Exception e) {
-                    assert ExceptionUtil.printStackTrace(e);
+                    ExceptionUtil.printStackTrace(e);
                 }
 
                 return hashCode;

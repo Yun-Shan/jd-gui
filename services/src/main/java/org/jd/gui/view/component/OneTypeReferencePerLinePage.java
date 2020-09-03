@@ -55,7 +55,7 @@ public class OneTypeReferencePerLinePage extends TypeReferencePage implements Ur
                 sb.append(line).append('\n');
             }
         } catch (IOException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
 
         // Display
@@ -93,7 +93,7 @@ public class OneTypeReferencePerLinePage extends TypeReferencePage implements Ur
                     api.openURI(x, y, entries, null, data.internalTypeName);
                 }
             } catch (URISyntaxException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
             }
         }
     }

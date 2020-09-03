@@ -34,7 +34,8 @@ public class App {
             Configuration configuration = persister.load();
             Runtime.getRuntime().addShutdownHook(new Thread(() -> persister.save(configuration)));
 
-            if ("true".equals(configuration.getPreferences().get(SINGLE_INSTANCE))) {
+
+            if (Boolean.parseBoolean(configuration.getPreferences().get(SINGLE_INSTANCE))) {
                 InterProcessCommunicationUtil ipc = new InterProcessCommunicationUtil();
                 try {
                     ipc.listen(receivedArgs -> controller.openFiles(newList(receivedArgs)));
@@ -53,7 +54,7 @@ public class App {
                 try {
                     UIManager.setLookAndFeel(configuration.getLookAndFeel());
                 } catch (Exception ee) {
-                    assert ExceptionUtil.printStackTrace(ee);
+                    ExceptionUtil.printStackTrace(ee);
                 }
            }
 

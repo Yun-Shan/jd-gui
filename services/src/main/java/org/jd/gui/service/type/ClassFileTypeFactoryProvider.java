@@ -29,7 +29,7 @@ public class ClassFileTypeFactoryProvider extends AbstractTypeFactoryProvider {
         try {
             Class.forName(JavaType.class.getName());
         } catch (Exception e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
     }
 
@@ -89,7 +89,7 @@ public class ClassFileTypeFactoryProvider extends AbstractTypeFactoryProvider {
                                 try (InputStream is2 = entry.getInputStream()) {
                                     classReader = new ClassReader(is2);
                                 } catch (IOException e) {
-                                    assert ExceptionUtil.printStackTrace(e);
+                                    ExceptionUtil.printStackTrace(e);
                                     return null;
                                 }
                                 break;
@@ -110,7 +110,7 @@ public class ClassFileTypeFactoryProvider extends AbstractTypeFactoryProvider {
 
                 type = new JavaType(entry, classReader, -1);
             } catch (IOException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
                 type = null;
             }
 
@@ -163,7 +163,7 @@ public class ClassFileTypeFactoryProvider extends AbstractTypeFactoryProvider {
                                 }
                                 innerTypes.add(new JavaType(innerEntry, classReader, access));
                             } catch (IOException e) {
-                                assert ExceptionUtil.printStackTrace(e);
+                                ExceptionUtil.printStackTrace(e);
                             }
                         }
                     }
@@ -261,7 +261,7 @@ public class ClassFileTypeFactoryProvider extends AbstractTypeFactoryProvider {
                             return getDisplayTypeName(outerName, packageLength) + '.' + classVisitor.getInnerName();
                         }
                     } catch (IOException e) {
-                        assert ExceptionUtil.printStackTrace(e);
+                        ExceptionUtil.printStackTrace(e);
                     }
                 }
             }

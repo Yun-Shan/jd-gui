@@ -30,7 +30,7 @@ public class EarContainerFactoryProvider implements ContainerFactory {
             try {
                 return rootPath.getFileSystem().provider().getScheme().equals("file") && Files.exists(rootPath.resolve("META-INF/application.xml"));
             } catch (InvalidPathException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
                 return false;
             }
         }

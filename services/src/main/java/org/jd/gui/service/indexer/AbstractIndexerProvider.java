@@ -33,7 +33,7 @@ public abstract class AbstractIndexerProvider implements Indexer {
                 properties.load(is);
             }
         } catch (IOException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
 
         init(properties);

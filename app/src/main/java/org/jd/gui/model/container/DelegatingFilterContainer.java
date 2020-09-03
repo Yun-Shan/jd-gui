@@ -37,6 +37,7 @@ public class DelegatingFilterContainer implements Container {
 
     @Override public String getType() { return container.getType(); }
     @Override public Container.Entry getRoot() { return root; }
+    @Override public void onClose() { this.container.onClose(); }
 
     public Container.Entry getEntry(URI uri) { return uriToDelegatedEntry.get(uri); }
     public Set<URI> getUris() { return validEntries; }
@@ -113,5 +114,6 @@ public class DelegatingFilterContainer implements Container {
 
         @Override public String getType() { return container.getType(); }
         @Override public Entry getRoot() { return getDelegatedEntry(container.getRoot()); }
+        @Override public void onClose() { this.container.onClose(); }
     }
 }

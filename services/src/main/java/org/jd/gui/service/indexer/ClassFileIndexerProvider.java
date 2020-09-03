@@ -7,14 +7,17 @@
 
 package org.jd.gui.service.indexer;
 
+import com.google.common.io.ByteStreams;
 import org.jd.gui.api.API;
 import org.jd.gui.api.model.Container;
 import org.jd.gui.api.model.Indexes;
+import org.jd.gui.model.container.JarContainer;
 import org.jd.gui.util.exception.ExceptionUtil;
 import org.objectweb.asm.*;
 import org.objectweb.asm.signature.SignatureReader;
 import org.objectweb.asm.signature.SignatureVisitor;
 
+import javax.crypto.spec.SecretKeySpec;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashSet;
@@ -70,8 +73,13 @@ public class ClassFileIndexerProvider extends AbstractIndexerProvider {
         descriptorSet.clear();
 
         try (InputStream inputStream = entry.getInputStream()) {
+            byte[] bytes = ByteStreams.toByteArray(inputStream);
+            Container container = entry.getContainer();
+            if (container instanceof JarContainer) {
+                ((JarContainer) container).readClass(bytes);
+            }
             // Index field, method, interfaces & super type
-            ClassReader classReader = new ClassReader(inputStream);
+            ClassReader classReader = new ClassReader(bytes);
             classReader.accept(classIndexer, SKIP_CODE|SKIP_DEBUG|SKIP_FRAMES);
 
             // Index descriptors
@@ -153,7 +161,7 @@ public class ClassFileIndexerProvider extends AbstractIndexerProvider {
                 }
             }
         } catch (Exception e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
     }
 

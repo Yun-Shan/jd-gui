@@ -86,7 +86,7 @@ public class AboutView {
                     }
                 }
             } catch (IOException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
             }
 
             subsubpanel.add(new JLabel("JD-GUI"));

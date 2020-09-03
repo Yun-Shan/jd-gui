@@ -157,7 +157,7 @@ public class TreeTabbedPanel<T extends DefaultMutableTreeNode & ContainerEntryGe
                     }
                 }
             } catch (URISyntaxException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
             } finally {
                 // Enable tabbedPane.changeListener
                 updateTreeMenuEnabled = true;
@@ -264,7 +264,7 @@ public class TreeTabbedPanel<T extends DefaultMutableTreeNode & ContainerEntryGe
                 }
             }
         } catch (URISyntaxException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
 
         return false;

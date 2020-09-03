@@ -147,7 +147,7 @@ public class ManifestFilePage extends HyperlinkPage implements UriGettable, Inde
                     api.openURI(x, y, entries, null, data.fragment);
                 }
             } catch (URISyntaxException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
             }
         }
     }

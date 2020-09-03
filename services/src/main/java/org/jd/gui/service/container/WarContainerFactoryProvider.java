@@ -30,7 +30,7 @@ public class WarContainerFactoryProvider implements ContainerFactory {
             try {
                 return rootPath.getFileSystem().provider().getScheme().equals("file") && Files.exists(rootPath.resolve("WEB-INF"));
             } catch (InvalidPathException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
                 return false;
             }
         }

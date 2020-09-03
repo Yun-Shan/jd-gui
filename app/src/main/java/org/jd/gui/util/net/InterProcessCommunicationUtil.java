@@ -33,7 +33,7 @@ public class InterProcessCommunicationUtil {
                         String[] args = (String[])ois.readObject();
                         consumer.accept(args);
                     } catch (IOException|ClassNotFoundException e) {
-                        assert ExceptionUtil.printStackTrace(e);
+                        ExceptionUtil.printStackTrace(e);
                     }
                 }
             }
@@ -48,7 +48,7 @@ public class InterProcessCommunicationUtil {
             // Send args to the main JD-GUI instance
             oos.writeObject(args);
         } catch (IOException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
     }
 }

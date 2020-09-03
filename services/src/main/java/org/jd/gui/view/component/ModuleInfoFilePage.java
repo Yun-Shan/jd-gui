@@ -70,7 +70,7 @@ public class ModuleInfoFilePage extends ClassFilePage {
             // Decompile class file
             DECOMPILER.decompile(loader, printer, entryInternalName);
         } catch (Throwable t) {
-            assert ExceptionUtil.printStackTrace(t);
+            ExceptionUtil.printStackTrace(t);
             setText("// INTERNAL ERROR //");
         }
     }
@@ -128,7 +128,7 @@ public class ModuleInfoFilePage extends ClassFilePage {
                     }
                 }
             } catch (URISyntaxException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
             }
         }
     }
@@ -242,7 +242,7 @@ public class ModuleInfoFilePage extends ClassFilePage {
                     }
                 }
             } catch (Exception e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
             }
 
             if (reference.enabled != enabled) {

@@ -40,12 +40,12 @@ public class FileSourceSaverProvider extends AbstractSourceSaverProvider {
         try (InputStream is = entry.getInputStream()) {
             Files.copy(is, path, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
 
             try (BufferedWriter writer = Files.newBufferedWriter(path, Charset.defaultCharset())) {
                 writer.write("// INTERNAL ERROR //");
             } catch (IOException ee) {
-                assert ExceptionUtil.printStackTrace(ee);
+                ExceptionUtil.printStackTrace(ee);
             }
         }
     }

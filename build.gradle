@@ -15,7 +15,7 @@ apply plugin: 'edu.sc.seis.launch4j'
 apply plugin: 'nebula.ospackage'
 
 // Common configuration //
-rootProject.version='1.6.6'
+rootProject.version='2.0'
 rootProject.ext.set('jdCoreVersion', '1.1.3')
 targetCompatibility = '1.8'
 
@@ -105,6 +105,7 @@ task proguard(type: proguard.gradle.ProGuardTask, dependsOn: 'jar') {
     injars jar.archivePath
     outjars 'build/libs/' + project.name + '-' + project.version + '-min.jar'
     libraryjars System.getProperty('java.home') + '/lib/rt.jar'
+    libraryjars System.getProperty('java.home') + '/lib/jce.jar'
     libraryjars System.getProperty('java.home') + '/jmods/'
 }
 
@@ -113,9 +114,9 @@ launch4j {
     createExe.dependsOn 'proguard'
 
     version = textVersion = project.version
-    fileDescription = productName = 'JD-GUI'
-    errTitle 'JD-GUI Windows Wrapper'
-    copyright 'JD-GUI (C) 2008-2019 Emmanuel Dupuy'
+    fileDescription = productName = 'JD-GUI-YS'
+    errTitle 'JD-GUI-YS Windows Wrapper'
+    copyright 'JD-GUI-YS (C) 2008-2020 Emmanuel Dupuy, Enhanced By Yun-Shan'
     icon projectDir.path + '/src/launch4j/resources/images/jd-gui.ico'
     jar projectDir.path + '/' + proguard.outJarFiles[0]
     bundledJrePath = '%JAVA_HOME%'
@@ -127,14 +128,14 @@ ospackage {
     buildRpm.dependsOn 'proguard'
 
     license = file('LICENSE')
-    maintainer 'Emmanuel Dupuy <emmanue1@users.noreply.github.com>'
+    maintainer 'Yun-Shan <Yun-Shan@users.noreply.github.com>'
     os LINUX
-    packageDescription 'JD-GUI, a standalone graphical utility that displays Java sources from CLASS files'
+    packageDescription 'JD-GUI(Enhanced By Yun-Shan), a standalone graphical utility that displays Java sources from CLASS files'
     packageGroup 'java'
     packageName project.name
     release '0'
     summary 'A Java Decompiler'
-    url 'https://github.com/java-decompiler/jd-gui'
+    url 'https://github.com/Yun-Shan/jd-gui'
 
     into '/opt/' + project.name
     from (proguard.outJarFiles[0]) {
@@ -152,26 +153,26 @@ ospackage {
 // Distributions for OSX and Windows //
 distributions {
     osx.contents {
-        into('JD-GUI.app/Contents') {
+        into('JD-GUI-YS.app/Contents') {
             from('src/osx/resources') {
                 include 'Info.plist'
                 expand VERSION: project.version,
                        JAR: file(proguard.outJarFiles[0]).name
             }
         }
-        into('JD-GUI.app/Contents/MacOS') {
+        into('JD-GUI-YS.app/Contents/MacOS') {
             from('src/osx/resources') {
                 include 'universalJavaApplicationStub.sh'
                 fileMode 0755
             }
         }
-        into('JD-GUI.app/Contents/Resources/Java') {
+        into('JD-GUI-YS.app/Contents/Resources/Java') {
             from proguard.outJarFiles[0]
         }
         from 'LICENSE', 'NOTICE', 'README.md'
     }
     windows.contents {
-        from 'build/launch4j/jd-gui.exe'
+        from 'build/launch4j/jd-gui-ys.exe'
         from 'LICENSE', 'NOTICE', 'README.md'
     }
 

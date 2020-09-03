@@ -74,7 +74,7 @@ public class EjbJarXmlFilePage extends TypeReferencePage implements UriGettable,
                     api.openURI(x, y, entries, null, data.internalTypeName);
                 }
             } catch (URISyntaxException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
             }
         }
     }

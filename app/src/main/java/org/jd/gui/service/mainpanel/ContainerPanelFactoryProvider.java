@@ -44,11 +44,13 @@ public class ContainerPanelFactoryProvider implements PanelFactory {
 	}
 
     protected class ContainerPanel extends TreeTabbedPanel implements ContentIndexable, SourcesSavable {
-        protected Container.Entry entry;
+        protected final Container container;
+	    protected final Container.Entry entry;
 
         public ContainerPanel(API api, Container container) {
             super(api, container.getRoot().getParent().getUri());
 
+            this.container = container;
             this.entry = container.getRoot().getParent();
 
             DefaultMutableTreeNode root = new DefaultMutableTreeNode();
@@ -61,6 +63,12 @@ public class ContainerPanelFactoryProvider implements PanelFactory {
             }
 
             tree.setModel(new DefaultTreeModel(root));
+        }
+
+        @Override
+        public void removeNotify() {
+            super.removeNotify();
+            this.container.onClose();
         }
 
         // --- ContentIndexable --- //
@@ -128,7 +136,7 @@ public class ContainerPanelFactoryProvider implements PanelFactory {
                     }
                 }
             } catch (URISyntaxException|IOException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
             }
         }
     }

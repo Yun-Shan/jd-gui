@@ -43,7 +43,7 @@ public class ExtensionService {
                 }
             }
         } catch (Exception e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
 
         extensionClassLoader = ExtensionService.class.getClassLoader();

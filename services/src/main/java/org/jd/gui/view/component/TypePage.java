@@ -96,7 +96,7 @@ public abstract class TypePage extends CustomLineNumbersPage implements UriGetta
                     }
                 }
             } catch (URISyntaxException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
             }
         }
     }
@@ -130,7 +130,7 @@ public abstract class TypePage extends CustomLineNumbersPage implements UriGetta
                     goToLineNumber(Integer.parseInt(lineNumber));
                     return true;
                 } catch (NumberFormatException e) {
-                    assert ExceptionUtil.printStackTrace(e);
+                    ExceptionUtil.printStackTrace(e);
                 }
             } else if (parameters.containsKey("position")) {
                 String position = parameters.get("position");
@@ -141,7 +141,7 @@ public abstract class TypePage extends CustomLineNumbersPage implements UriGetta
                         ranges.add(new DocumentRange(pos, pos));
                     }
                 } catch (NumberFormatException e) {
-                    assert ExceptionUtil.printStackTrace(e);
+                    ExceptionUtil.printStackTrace(e);
                 }
             } else {
                 matchQueryAndAddDocumentRange(parameters, declarations, hyperlinks, strings, ranges);
@@ -357,7 +357,7 @@ public abstract class TypePage extends CustomLineNumbersPage implements UriGetta
                         }
                     }
                 } catch (Exception e) {
-                    assert ExceptionUtil.printStackTrace(e);
+                    ExceptionUtil.printStackTrace(e);
                 }
             } else {
                 try {
@@ -372,7 +372,7 @@ public abstract class TypePage extends CustomLineNumbersPage implements UriGetta
                     }
                 } catch (Error e) {
                     // Catch StackOverflowError or OutOfMemoryError
-                    assert ExceptionUtil.printStackTrace(e);
+                    ExceptionUtil.printStackTrace(e);
                     enabled = false;
                 }
             }
@@ -405,7 +405,7 @@ public abstract class TypePage extends CustomLineNumbersPage implements UriGetta
                 }
             }
         } catch (Exception e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
         }
 
         String rootUri = entry.getContainer().getRoot().getUri().toString();

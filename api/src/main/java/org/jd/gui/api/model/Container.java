@@ -16,6 +16,8 @@ public interface Container {
 
     Entry getRoot();
 
+    void onClose();
+
     /**
      * File or directory
      */

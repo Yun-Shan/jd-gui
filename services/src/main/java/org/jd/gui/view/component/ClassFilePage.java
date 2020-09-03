@@ -9,20 +9,36 @@ package org.jd.gui.view.component;
 
 import org.fife.ui.rsyntaxtextarea.DocumentRange;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rsyntaxtextarea.modes.JavaTokenMaker;
+import org.fife.ui.rtextarea.Marker;
+import org.fife.ui.rtextarea.RTextArea;
+import org.fife.ui.rtextarea.SmartHighlightPainter;
+import org.fife.ui.rtextarea.ToolTipSupplier;
 import org.jd.core.v1.ClassFileToJavaSourceDecompiler;
+import org.jd.core.v1.api.printer.Printer;
 import org.jd.gui.api.API;
 import org.jd.gui.api.model.Container;
+import org.jd.gui.model.container.JarContainer;
+import org.jd.gui.service.project.JavaIdentifier;
+import org.jd.gui.service.project.JavaProject;
 import org.jd.gui.util.decompiler.*;
 import org.jd.gui.util.exception.ExceptionUtil;
 import org.jd.gui.util.io.NewlineOutputStream;
 
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultCaret;
+import javax.swing.*;
+import javax.swing.text.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.*;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 public class ClassFilePage extends TypePage {
     protected static final String ESCAPE_UNICODE_CHARACTERS   = "ClassFileDecompilerPreferences.escapeUnicodeCharacters";
@@ -35,23 +51,143 @@ public class ClassFilePage extends TypePage {
 
     protected int maximumLineNumber = -1;
 
+    private static final Executor EXECUTOR = Executors.newFixedThreadPool(1);
+
     static {
         // Early class loading
         try {
             String internalTypeName = ClassFilePage.class.getName().replace('.', '/');
             DECOMPILER.decompile(new ClassPathLoader(), new NopPrinter(), internalTypeName);
         } catch (Throwable t) {
-            assert ExceptionUtil.printStackTrace(t);
+            ExceptionUtil.printStackTrace(t);
+        }
+    }
+
+    private final TreeMap<Integer, DescData> descMap = new TreeMap<>();
+    private static class DescData {
+        int startPosition;
+        int endPosition;
+        JavaIdentifier identifier;
+
+        public DescData(int startPosition, int endPosition, JavaIdentifier identifier) {
+            this.startPosition = startPosition;
+            this.endPosition = endPosition;
+            this.identifier = identifier;
+        }
+    }
+
+    @Override
+    public void removeNotify() {
+        super.removeNotify();
+        Container container = this.entry.getContainer();
+        if (container instanceof JarContainer) {
+            JavaProject project = ((JarContainer) container).getProject();
+            project.removeIdentifierAliasListener(this.entry.getPath());
         }
     }
 
     public ClassFilePage(API api, Container.Entry entry) {
         super(api, entry);
+        this.initJavaProjectListeners();
+
         Map<String, String> preferences = api.getPreferences();
         // Init view
         setErrorForeground(Color.decode(preferences.get("JdGuiPreferences.errorBackgroundColor")));
         // Display source
         decompile(preferences);
+    }
+
+    private JavaProject project;
+    private void initJavaProjectListeners() {
+        Container container = this.entry.getContainer();
+        if (!(container instanceof JarContainer)) {
+            return;
+        }
+        this.project = ((JarContainer) container).getProject();
+        this.project.addIdentifierAliasListener(this.entry.getPath(), id -> {
+            this.preferencesChanged(api.getPreferences());
+            this.indexesChanged(api.getCollectionOfFutureIndexes());
+        });
+
+        AtomicReference<JavaIdentifier> currentIdentifier = new AtomicReference<>();
+
+        // popup menu
+        // alias
+        JPopupMenu menu = new JPopupMenu();
+        AbstractAction setAliasAction = new AbstractAction("Set Alias") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (project != null) {
+                    JavaIdentifier id = currentIdentifier.get();
+                    String result = JOptionPane.showInputDialog("Set New Alias For: \n" + id.getFriendlyDisplay());
+                    if (result != null) {
+                        project.setAlias(id, result);
+                    }
+                    EXECUTOR.execute(project::saveIdentifiers);
+                }
+            }
+        };
+        JMenuItem itemAlias = new JMenuItem(setAliasAction);
+        itemAlias.setAccelerator(null);
+        menu.add(itemAlias);
+        // comment
+        AbstractAction setCommentAction = new AbstractAction("Set Comment") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (project != null) {
+                    JavaIdentifier id = currentIdentifier.get();
+                    String result = JOptionPane.showInputDialog("Set New Comment For: \n" + id.getFriendlyDisplay());
+                    if (result != null) {
+                        id.setComment(result);
+                    }
+                    EXECUTOR.execute(project::saveIdentifiers);
+                }
+            }
+        };
+        JMenuItem itemComment = new JMenuItem(setCommentAction);
+        itemComment.setAccelerator(null);
+        menu.add(itemComment);
+
+        textArea.setPopupMenu(menu);
+        Function<MouseEvent, DescData> getDescDataAtMouse = event -> {
+            int offset = textArea.viewToModel(new Point(event.getX(), event.getY()));
+            if (offset != -1) {
+                Map.Entry<Integer, DescData> descEntry = descMap.floorEntry(offset);
+                if ((descEntry != null)) {
+                    DescData entryData = descEntry.getValue();
+                    if (entryData != null
+                        && (offset < entryData.endPosition) && (offset >= entryData.startPosition)) {
+                        return entryData;
+                    }
+                }
+            }
+            return null;
+        };
+        textArea.setToolTipSupplier((area, e) -> {
+            DescData entryData = getDescDataAtMouse.apply(e);
+            if (entryData != null) {
+                return entryData.identifier.getFriendlyDisplay();
+            }
+            return null;
+        });
+
+        MouseAdapter listener = new MouseAdapter() {
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    JavaIdentifier id = null;
+                    DescData entryData = getDescDataAtMouse.apply(e);
+                    if (entryData != null) {
+                        id = entryData.identifier;
+                    }
+                    currentIdentifier.set(id);
+                    itemAlias.setEnabled(id != null && id.canSetAlias());
+                    itemComment.setEnabled(id != null && id.canSetAlias());
+                }
+            }
+        };
+        textArea.addMouseListener(listener);
     }
 
     public void decompile(Map<String, String> preferences) {
@@ -85,10 +221,33 @@ public class ClassFilePage extends TypePage {
             assert entryPath.endsWith(".class");
             String entryInternalName = entryPath.substring(0, entryPath.length() - 6); // 6 = ".class".length()
 
+
+            descMap.clear();
+            Highlighter highlighter = textArea.getHighlighter();
+            highlighter.removeAllHighlights();
+            Marker.clearMarkAllHighlights(textArea);
+
             // Decompile class file
             DECOMPILER.decompile(loader, printer, entryInternalName, configuration);
+
+            try {
+                Color c = Color.decode("0x7FFFAA");
+                SmartHighlightPainter painter = new SmartHighlightPainter(
+                    new Color(c.getRed(), c.getGreen(), c.getBlue(), 127));
+                Document doc = textArea.getDocument();
+                for (DescData descData : descMap.values()) {
+                    if (!descData.identifier.hasAlias()) {
+                        continue;
+                    }
+                    int start = doc.createPosition(descData.startPosition).getOffset();
+                    int end = doc.createPosition(descData.endPosition).getOffset();
+                    highlighter.addHighlight(start, end, painter);
+                }
+            } catch (BadLocationException e) {
+                e.printStackTrace();
+            }
         } catch (Throwable t) {
-            assert ExceptionUtil.printStackTrace(t);
+            ExceptionUtil.printStackTrace(t);
             setText("// INTERNAL ERROR //");
         }
 
@@ -97,7 +256,7 @@ public class ClassFilePage extends TypePage {
 
     protected static boolean getPreferenceValue(Map<String, String> preferences, String key, boolean defaultValue) {
         String v = preferences.get(key);
-        return (v == null) ? defaultValue : Boolean.valueOf(v);
+        return (v == null) ? defaultValue : Boolean.parseBoolean(v);
     }
 
     @Override
@@ -178,15 +337,15 @@ public class ClassFilePage extends TypePage {
             try (PrintStream ps = new PrintStream(new NewlineOutputStream(os), true, "UTF-8")) {
                 ps.print(stringBuffer.toString());
             } catch (IOException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
             }
         } catch (Throwable t) {
-            assert ExceptionUtil.printStackTrace(t);
+            ExceptionUtil.printStackTrace(t);
 
             try (OutputStreamWriter writer = new OutputStreamWriter(os, Charset.defaultCharset())) {
                 writer.write("// INTERNAL ERROR //");
             } catch (IOException ee) {
-                assert ExceptionUtil.printStackTrace(ee);
+                ExceptionUtil.printStackTrace(ee);
             }
         }
     }
@@ -204,7 +363,7 @@ public class ClassFilePage extends TypePage {
                 int end = textArea.getLineEndOffset(textAreaLineNumber - 1);
                 setCaretPositionAndCenter(new DocumentRange(start, end));
             } catch (BadLocationException e) {
-                assert ExceptionUtil.printStackTrace(e);
+                ExceptionUtil.printStackTrace(e);
             }
         }
     }
@@ -259,28 +418,33 @@ public class ClassFilePage extends TypePage {
 
         @Override
         public void printDeclaration(int type, String internalTypeName, String name, String descriptor) {
+            name = this.getAlias(type, internalTypeName, name, descriptor);
+
             if (internalTypeName == null) internalTypeName = "null";
             if (name == null) name = "null";
             if (descriptor == null) descriptor = "null";
 
             switch (type) {
-                case TYPE:
+                case Printer.TYPE:
                     TypePage.DeclarationData data = new TypePage.DeclarationData(stringBuffer.length(), name.length(), internalTypeName, null, null);
                     declarations.put(internalTypeName, data);
                     typeDeclarations.put(stringBuffer.length(), data);
                     break;
-                case CONSTRUCTOR:
+                case Printer.CONSTRUCTOR:
                     declarations.put(internalTypeName + "-<init>-" + descriptor, new TypePage.DeclarationData(stringBuffer.length(), name.length(), internalTypeName, "<init>", descriptor));
                     break;
                 default:
                     declarations.put(internalTypeName + '-' + name + '-' + descriptor, new TypePage.DeclarationData(stringBuffer.length(), name.length(), internalTypeName, name, descriptor));
                     break;
             }
+
             super.printDeclaration(type, internalTypeName, name, descriptor);
         }
 
         @Override
         public void printReference(int type, String internalTypeName, String name, String descriptor, String ownerInternalName) {
+            name = this.getAlias(type, internalTypeName, name, descriptor);
+
             if (internalTypeName == null) internalTypeName = "null";
             if (name == null) name = "null";
             if (descriptor == null) descriptor = "null";
@@ -297,6 +461,30 @@ public class ClassFilePage extends TypePage {
                     break;
             }
             super.printReference(type, internalTypeName, name, descriptor, ownerInternalName);
+        }
+
+        private String getAlias(int type, String internalTypeName, String name, String descriptor) {
+            if (project != null) {
+                JavaIdentifier identifier;
+                if (type == Printer.TYPE || type == Printer.CONSTRUCTOR) {
+                    identifier = project.getIdentifier(internalTypeName);
+                } else {
+                    identifier = project.getIdentifier(internalTypeName, name, descriptor);
+                }
+                if (identifier != null) {
+                    if (identifier.hasAlias()) {
+                        if (type == Printer.TYPE && name.indexOf('.') != -1) {
+                            int idx = name.lastIndexOf('.');
+                            name = name.substring(0, idx + 1) + identifier.getAlias();
+                        } else {
+                            name = identifier.getAlias();
+                        }
+                    }
+                    DescData descData = new DescData(getCurrentPosition(), getCurrentPosition() + name.length(), identifier);
+                    descMap.put(getCurrentPosition(), descData);
+                }
+            }
+            return name;
         }
 
         @Override

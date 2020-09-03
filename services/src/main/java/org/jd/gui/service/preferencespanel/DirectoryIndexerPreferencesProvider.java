@@ -66,7 +66,7 @@ public class DirectoryIndexerPreferencesProvider extends JPanel implements Prefe
             int i = Integer.valueOf(maximumDepthTextField.getText());
             return (i > 0) && (i <= MAX_VALUE);
         } catch (NumberFormatException e) {
-            assert ExceptionUtil.printStackTrace(e);
+            ExceptionUtil.printStackTrace(e);
             return false;
         }
     }
