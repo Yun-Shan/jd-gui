@@ -232,7 +232,7 @@ public class MainView<T extends JComponent & UriGettable> implements UriOpenable
             menu = new JMenu("Search");
             menuBar.add(menu);
             menu.add(searchAction).setAccelerator(KeyStroke.getKeyStroke('S', menuShortcutKeyMask|InputEvent.SHIFT_MASK));
-            menu.add(advancedSearchAction).setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.SHIFT_MASK));
+            menu.add(advancedSearchAction).setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.ALT_MASK));
             menu = new JMenu("Help");
             menuBar.add(menu);
             if (browser) {
